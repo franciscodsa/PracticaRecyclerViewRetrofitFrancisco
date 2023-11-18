@@ -68,6 +68,7 @@ class CustomerViewModel @Inject constructor(private val getAllCustomersUseCase: 
             val result = getAllCustomersUseCase.invoke()
 
             when (result) {
+                //TODO : REVISA LO DEL RESULT MESSAGE
                 is NetworkResultt.Error -> _error.value = result.message ?: result.message
                 is NetworkResultt.Loading -> TODO()
                 is NetworkResultt.Success -> {
