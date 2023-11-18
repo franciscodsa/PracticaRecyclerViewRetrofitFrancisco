@@ -2,6 +2,7 @@ package com.example.recyclerviewretrofitfrancisco.framework.customer
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,7 +27,7 @@ class CustomerActivity : AppCompatActivity() {
 
 
 
-        customerAdapter = CustomerAdapter(this, object : CustomerAdapter.CustomerActions{
+        customerAdapter = CustomerAdapter(this, object : CustomerAdapter.CustomerActions {
             override fun onDelete(customer: Customer) {
                 TODO("Not yet implemented")
             }
@@ -53,15 +54,21 @@ class CustomerActivity : AppCompatActivity() {
         observeViewModel()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.customer_menu, menu)
+        return true
+    }
+
     private fun configurarAppBar() {
-        binding.topAppBar.setOnMenuItemClickListener { menuItem -> when (menuItem.itemId) {
+        binding.topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
                 R.id.borrarMenuBarAction -> {
                     deleteSelectedCustomers()
                     true
                 }
 
-            else -> false
-        }
+                else -> false
+            }
 
         }
     }
@@ -82,4 +89,6 @@ class CustomerActivity : AppCompatActivity() {
             customerAdapter.submitList(customersList)
         }
     }
+
+
 }
