@@ -19,8 +19,6 @@ class CustomerViewModel @Inject constructor(private val getAllCustomersUseCase: 
 
     private var selectedCustomers = mutableListOf<Customer>()
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> get() = _error
 
     private val _uiState = MutableLiveData(CustomerState())
     val uiState: LiveData<CustomerState> get() = _uiState
@@ -69,7 +67,7 @@ class CustomerViewModel @Inject constructor(private val getAllCustomersUseCase: 
 
             when (result) {
                 //TODO : REVISA LO DEL RESULT MESSAGE
-                is NetworkResultt.Error -> _error.value = result.message ?: result.message
+                is NetworkResultt.Error -> _uiState.value = _uiState.value?.copy(error = "Error al recuperar customers")
                 is NetworkResultt.Loading -> TODO()
                 is NetworkResultt.Success -> {
                     result.data?.let { customers ->
