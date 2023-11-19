@@ -66,10 +66,10 @@ class CustomerActivity : AppCompatActivity() {
                 R.id.borrarMenuBarAction -> {
                     deleteSelectedCustomers()
 
-                    /*// Obtener el tamaño de la lista customersSeleccionados del viewModel
+                    // Obtener el tamaño de la lista customersSeleccionados del viewModel
                     val selectedCustomersSize = viewModel.uiState.value?.customersSeleccionados?.size ?: 0
                     // Mostrar un Toast con el tamaño de la lista customersSeleccionados
-                    Toast.makeText(this, "Tamaño de la lista seleccionada: $selectedCustomersSize", Toast.LENGTH_SHORT).show()*/
+                    Toast.makeText(this, "Tamaño de la lista seleccionada: $selectedCustomersSize", Toast.LENGTH_SHORT).show()
                     true
                 }
 

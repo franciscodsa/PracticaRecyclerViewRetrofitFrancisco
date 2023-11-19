@@ -14,4 +14,5 @@ sealed class CustomerEvent{
     object DeleteSelectedCustomers : CustomerEvent()
 
     object ErrorVisto : CustomerEvent()
+
 }

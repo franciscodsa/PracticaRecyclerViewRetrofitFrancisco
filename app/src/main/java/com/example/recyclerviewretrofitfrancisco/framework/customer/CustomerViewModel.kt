@@ -35,7 +35,7 @@ class CustomerViewModel @Inject constructor(
             }
 
             CustomerEvent.ResetSelectMode -> {
-                TODO()
+                _uiState.value?.copy(customersSeleccionados = emptyList())
             }
 
             is CustomerEvent.SeleccionaCustomer -> {
@@ -53,16 +53,21 @@ class CustomerViewModel @Inject constructor(
 
     private fun deleteCustomers() {
         viewModelScope.launch {
-            uiState.value?.customersSeleccionados?.forEach { customer ->
+            selectedCustomers?.forEach { customer ->
                 // Obtener el ID del cliente y llamar al caso de uso para eliminarlo
                 val customerId = customer.id
 
                 deleteCustomer(customerId)
             }
-            // Después de eliminar todos los clientes seleccionados, limpiar la lista de seleccionados en el estado
-            _uiState.value = _uiState.value?.copy(customersSeleccionados = emptyList())
+            // Obtener la lista de clientes actualizada después de la eliminación
             getCustomers()
         }
+
+        // Después de eliminar todos los clientes seleccionados, limpiar la lista de seleccionados en el estado
+        customersList.clear()
+        _uiState.value = _uiState.value?.copy(customersSeleccionados = customersList)
+
+
     }
 
     private suspend fun deleteCustomer(customerId: Int) {
@@ -79,7 +84,7 @@ class CustomerViewModel @Inject constructor(
 
             is NetworkResultt.Success -> {
                 _uiState.value = _uiState.value?.copy(error = "Customer eliminado")
-                // Realizar acciones necesarias si la eliminación fue exitosa
+                selectedCustomers.removeFirst()
             }
             // Agregar manejo para NetworkResultt.Loading si es necesario
             is NetworkResultt.Loading -> TODO()
