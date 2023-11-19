@@ -46,19 +46,55 @@ class CustomerViewModel @Inject constructor(
                 _uiState.value = _uiState.value?.copy(selectedMode = true)
             }
 
-            CustomerEvent.DeleteSelectedCustomers -> TODO()
+            CustomerEvent.DeleteSelectedCustomers -> deleteCustomers()
+            CustomerEvent.ErrorVisto -> _uiState.value = _uiState.value?.copy(error = null)
+        }
+    }
+
+    private fun deleteCustomers() {
+        viewModelScope.launch {
+            uiState.value?.customersSeleccionados?.forEach { customer ->
+                // Obtener el ID del cliente y llamar al caso de uso para eliminarlo
+                val customerId = customer.id
+
+                deleteCustomer(customerId)
+            }
+            // Después de eliminar todos los clientes seleccionados, limpiar la lista de seleccionados en el estado
+            _uiState.value = _uiState.value?.copy(customersSeleccionados = emptyList())
+            getCustomers()
+        }
+    }
+
+    private suspend fun deleteCustomer(customerId: Int) {
+        val result =
+            deleteCustomerUsecase.invoke(customerId) // Asumiendo que 'invoke' toma el ID como parámetro para eliminar el cliente
+
+        // Aquí puedes manejar el resultado si es necesario, por ejemplo, actualizar el estado en caso de error, etc.
+        when (result) {
+            is NetworkResultt.Error -> {
+                // Manejar el error si es necesario
+                _uiState.value =
+                    _uiState.value?.copy(error = "Error al eliminar cliente con ID: $customerId")
+            }
+
+            is NetworkResultt.Success -> {
+                _uiState.value = _uiState.value?.copy(error = "Customer eliminado")
+                // Realizar acciones necesarias si la eliminación fue exitosa
+            }
+            // Agregar manejo para NetworkResultt.Loading si es necesario
+            is NetworkResultt.Loading -> TODO()
         }
     }
 
 
     private fun seleccionaCustomer(customer: Customer) {
-        if(isSeleceted(customer)){
+        if (isSeleceted(customer)) {
             selectedCustomers.remove(customer)
-        }else{
+        } else {
             selectedCustomers.add(customer)
         }
 
-        _uiState.value = _uiState.value?.copy(customersSeleccionados= selectedCustomers)
+        _uiState.value = _uiState.value?.copy(customersSeleccionados = selectedCustomers)
     }
 
     private fun isSeleceted(customer: Customer): Boolean {
@@ -72,7 +108,9 @@ class CustomerViewModel @Inject constructor(
 
             when (result) {
                 //TODO : REVISA LO DEL RESULT MESSAGE
-                is NetworkResultt.Error -> _uiState.value = _uiState.value?.copy(error = "Error al recuperar customers")
+                is NetworkResultt.Error -> _uiState.value =
+                    _uiState.value?.copy(error = "Error al recuperar customers")
+
                 is NetworkResultt.Loading -> TODO()
                 is NetworkResultt.Success -> {
                     result.data?.let { customers ->

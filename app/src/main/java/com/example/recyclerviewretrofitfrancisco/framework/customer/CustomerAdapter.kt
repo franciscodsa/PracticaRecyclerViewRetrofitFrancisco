@@ -78,6 +78,7 @@ class CustomerAdapter(
                 if (!selectedMode) {
                     val item = getItem(bindingAdapterPosition)
                     toggleSelection(item)
+
                 }
                 true // Indicar que se ha manejado el clic largo
             }
@@ -86,7 +87,6 @@ class CustomerAdapter(
             binding.selected.setOnClickListener {
                 val item = getItem(bindingAdapterPosition)
                 toggleSelection(item)
-                actions.onStartSelectMode(item)
             }
 
             // Configuración del evento de clic en cualquier otra parte del elemento (excepto el CheckBox)
@@ -126,8 +126,10 @@ class CustomerAdapter(
 
             if (item.isSelected) {
                 selectedCustomers.add(item)
+                actions.onStartSelectMode(item)
             } else {
                 selectedCustomers.remove(item)
+                actions.onStartSelectMode(item)
             }
             notifyItemChanged(bindingAdapterPosition)
         }

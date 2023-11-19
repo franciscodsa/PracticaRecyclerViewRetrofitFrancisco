@@ -65,6 +65,11 @@ class CustomerActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.borrarMenuBarAction -> {
                     deleteSelectedCustomers()
+
+                    /*// Obtener el tamaño de la lista customersSeleccionados del viewModel
+                    val selectedCustomersSize = viewModel.uiState.value?.customersSeleccionados?.size ?: 0
+                    // Mostrar un Toast con el tamaño de la lista customersSeleccionados
+                    Toast.makeText(this, "Tamaño de la lista seleccionada: $selectedCustomersSize", Toast.LENGTH_SHORT).show()*/
                     true
                 }
 
@@ -75,7 +80,7 @@ class CustomerActivity : AppCompatActivity() {
     }
 
     private fun deleteSelectedCustomers() {
-        TODO("Not yet implemented")
+        viewModel.handleEvent(CustomerEvent.DeleteSelectedCustomers)
     }
 
     private fun observeViewModel() {
@@ -87,7 +92,7 @@ class CustomerActivity : AppCompatActivity() {
 
             state.error?.let {
                 Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-                //TODO : ADD ERRORVISTO EVENT
+                viewModel.handleEvent(CustomerEvent.ErrorVisto)
             }
 
 
