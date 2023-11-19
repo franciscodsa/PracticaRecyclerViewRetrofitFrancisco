@@ -57,6 +57,21 @@ class RemoteDataSource @Inject constructor(
         }
     }
 
+    suspend fun deleteCustomer(id: Int) : NetworkResultt<Unit>{
+        try {
+            val response = customerService.deleteCustomer(id)
+
+            if (response.isSuccessful){
+                return NetworkResultt.Success(Unit)
+            }else{
+                val errorMessage = response.errorBody()?.string() ?: "Unknown error"
+                return error("Error ${response.code()} : $errorMessage")
+            }
+        }catch (e: Exception) {
+            return error(e.message ?: e.toString())
+        }
+    }
+
     suspend fun getCustomerOrders(id: Int): NetworkResultt<List<Order>> {
         try {
             val response = orderService.getCustomerOrders(id)

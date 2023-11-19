@@ -13,5 +13,5 @@ class CustomerRepository @Inject constructor(private val remoteDataSource: Remot
 
     suspend fun getCustomer(id : Int) = withContext(Dispatchers.IO){remoteDataSource.getCustomer(id)}
 
-    suspend fun deleteCustomer(id : Int) = withContext(Dispatchers.IO){remoteDataSource.}
+    suspend fun deleteCustomer(id : Int) = withContext(Dispatchers.IO){remoteDataSource.deleteCustomer(id)}
 }
