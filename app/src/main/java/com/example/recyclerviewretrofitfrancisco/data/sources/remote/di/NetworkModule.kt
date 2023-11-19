@@ -1,6 +1,7 @@
 package com.example.recyclerviewretrofitfrancisco.data.sources.remote.di
 
 import com.example.recyclerviewretrofitfrancisco.data.sources.remote.CustomerService
+import com.example.recyclerviewretrofitfrancisco.data.sources.remote.OrderService
 import com.example.recyclerviewretrofitfrancisco.data.sources.remote.ServiceInterceptor
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Moshi
@@ -12,6 +13,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.create
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -65,6 +67,10 @@ object NetworkModule {
     fun provideCustomerService(retrofit: Retrofit): CustomerService =
         retrofit.create(CustomerService::class.java)
 
+
+    @Singleton
+    @Provides
+    fun provideOrderService(retrofit: Retrofit): OrderService = retrofit.create(OrderService::class.java)
 }
 
 

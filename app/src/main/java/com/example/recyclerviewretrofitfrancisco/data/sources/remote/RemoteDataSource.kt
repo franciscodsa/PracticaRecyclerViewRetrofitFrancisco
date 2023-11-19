@@ -2,12 +2,17 @@ package com.example.recyclerviewretrofitfrancisco.data.sources.remote
 
 import com.example.recyclerviewretrofitfrancisco.data.model.BaseApiResponse
 import com.example.recyclerviewretrofitfrancisco.data.model.toCustomer
+import com.example.recyclerviewretrofitfrancisco.data.model.toOrder
 import com.example.recyclerviewretrofitfrancisco.domain.model.Customer
+import com.example.recyclerviewretrofitfrancisco.domain.model.Order
 import com.example.recyclerviewretrofitfrancisco.utils.NetworkResultt
 import java.lang.Exception
 import javax.inject.Inject
 
-class RemoteDataSource @Inject constructor(private val customerService: CustomerService) :
+class RemoteDataSource @Inject constructor(
+    private val customerService: CustomerService,
+    private val orderService: OrderService
+    ) :
     BaseApiResponse() {
         suspend fun getCustomers() : NetworkResultt<List<Customer>>{
             try {
@@ -30,4 +35,26 @@ class RemoteDataSource @Inject constructor(private val customerService: Customer
                 return error(e.message ?: e.toString())
             }
         }
+
+    suspend fun getCustomerOrders(id : Int) : NetworkResultt<List<Order>>{
+        try {
+            val response = orderService.getCustomerOrders(id)
+
+            if (response.isSuccessful){
+                val body = response.body()
+                body?.let {
+                    val orders = it.map{
+                            orderResponse -> orderResponse.toOrder()
+                    }
+                    return NetworkResultt.Success(orders)
+                }
+                return error("No data")
+            }else{
+                val errorMessage = response.errorBody()?.string() ?: "Unknown error"
+                return error("Error ${response.code()} : $errorMessage")
+            }
+        }catch (e : Exception){
+            return error(e.message ?: e.toString())
+        }
+    }
 }

@@ -1,4 +1,9 @@
 package com.example.recyclerviewretrofitfrancisco.framework.detalleyorders
 
-class DetallesYOrdersState {
-}
+import com.example.recyclerviewretrofitfrancisco.domain.model.Order
+
+data class DetallesYOrdersState (
+    val ordersList : List<Order> = emptyList(),
+    val error : String? = null
+)
+
