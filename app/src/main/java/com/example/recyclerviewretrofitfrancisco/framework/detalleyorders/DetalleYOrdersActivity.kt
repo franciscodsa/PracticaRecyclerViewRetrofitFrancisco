@@ -1,7 +1,6 @@
 package com.example.recyclerviewretrofitfrancisco.framework.detalleyorders
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -38,12 +37,20 @@ class DetalleYOrdersActivity : AppCompatActivity() {
         binding.ordersRecyclerView.layoutManager=LinearLayoutManager(this)
 
         viewModel.handleEvent(DetallesYOrdersEvent.GetCustomerOrders(getSelectedCustomerId()))
-
+        viewModel.handleEvent(DetallesYOrdersEvent.GetCustomer(getSelectedCustomerId()))
 
         viewModel.uiState.observe(this){state ->
             state.error?.let {
                 Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
                 //TODO : ADD ERRORVISTO EVENT
+            }
+
+            with(binding){
+                firstName.setText(state.customer.firstName)
+                lastNameTv.setText(state.customer.lastName)
+                dateOfBirthTv.setText(state.customer.birthDate.toString())
+                emailTv.setText(state.customer.email)
+                phoneTv.setText(state.customer.phone)
             }
 
             val ordersList = state.ordersList

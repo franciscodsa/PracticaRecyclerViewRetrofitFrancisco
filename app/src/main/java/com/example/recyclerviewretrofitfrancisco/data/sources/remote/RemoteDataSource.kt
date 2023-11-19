@@ -12,48 +12,69 @@ import javax.inject.Inject
 class RemoteDataSource @Inject constructor(
     private val customerService: CustomerService,
     private val orderService: OrderService
-    ) :
+) :
     BaseApiResponse() {
-        suspend fun getCustomers() : NetworkResultt<List<Customer>>{
-            try {
-                val response = customerService.getCustomers()
+    suspend fun getCustomers(): NetworkResultt<List<Customer>> {
+        try {
+            val response = customerService.getCustomers()
 
-                if (response.isSuccessful){
-                    val body = response.body()
-                    body?.let {
-                        val customers = it.map{
-                            customerResponse -> customerResponse.toCustomer()
-                        }
-                        return NetworkResultt.Success(customers)
+            if (response.isSuccessful) {
+                val body = response.body()
+                body?.let {
+                    val customers = it.map { customerResponse ->
+                        customerResponse.toCustomer()
                     }
-                    return error("No data")
-                }else{
-                    val errorMessage = response.errorBody()?.string() ?: "Unknown error"
-                    return error("Error ${response.code()} : $errorMessage")
+                    return NetworkResultt.Success(customers)
                 }
-            }catch (e : Exception){
-                return error(e.message ?: e.toString())
+                return error("No data")
+            } else {
+                val errorMessage = response.errorBody()?.string() ?: "Unknown error"
+                return error("Error ${response.code()} : $errorMessage")
             }
+        } catch (e: Exception) {
+            return error(e.message ?: e.toString())
         }
+    }
 
-    suspend fun getCustomerOrders(id : Int) : NetworkResultt<List<Order>>{
+    suspend fun getCustomer(id: Int): NetworkResultt<Customer> {
+        try {
+            val response = customerService.getCustomer(id)
+
+            if (response.isSuccessful) {
+                val body = response.body()
+                body?.let {
+                    val customer = it.toCustomer()
+                    return NetworkResultt.Success(customer)
+                }
+
+                return error("No data")
+            } else {
+                val errorMessage = response.errorBody()?.string() ?: "Unknown error"
+                return error("Error ${response.code()} : $errorMessage")
+            }
+        } catch (e: Exception) {
+            return error(e.message ?: e.toString())
+        }
+    }
+
+    suspend fun getCustomerOrders(id: Int): NetworkResultt<List<Order>> {
         try {
             val response = orderService.getCustomerOrders(id)
 
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {
-                    val orders = it.map{
-                            orderResponse -> orderResponse.toOrder()
+                    val orders = it.map { orderResponse ->
+                        orderResponse.toOrder()
                     }
                     return NetworkResultt.Success(orders)
                 }
                 return error("No data")
-            }else{
+            } else {
                 val errorMessage = response.errorBody()?.string() ?: "Unknown error"
                 return error("Error ${response.code()} : $errorMessage")
             }
-        }catch (e : Exception){
+        } catch (e: Exception) {
             return error(e.message ?: e.toString())
         }
     }

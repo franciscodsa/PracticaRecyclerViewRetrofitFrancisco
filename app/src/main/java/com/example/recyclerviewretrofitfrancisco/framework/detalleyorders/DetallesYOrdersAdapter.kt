@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recyclerviewretrofitfrancisco.R
 import com.example.recyclerviewretrofitfrancisco.databinding.ItemOrderBinding
-import com.example.recyclerviewretrofitfrancisco.domain.model.Customer
 import com.example.recyclerviewretrofitfrancisco.domain.model.Order
 
 class DetallesYOrdersAdapter (

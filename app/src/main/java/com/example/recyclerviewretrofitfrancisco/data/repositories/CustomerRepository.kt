@@ -10,4 +10,8 @@ import javax.inject.Inject
 class CustomerRepository @Inject constructor(private val remoteDataSource: RemoteDataSource){
 
     suspend fun getCustomers() = withContext(Dispatchers.IO){remoteDataSource.getCustomers()}
+
+    suspend fun getCustomer(id : Int) = withContext(Dispatchers.IO){remoteDataSource.getCustomer(id)}
+
+    suspend fun deleteCustomer(id : Int) = withContext(Dispatchers.IO){remoteDataSource.}
 }
