@@ -64,7 +64,7 @@ class CustomerViewModel @Inject constructor(
         }
 
         // Después de eliminar todos los clientes seleccionados, limpiar la lista de seleccionados en el estado
-        customersList.clear()
+        selectedCustomers.clear()
         _uiState.value = _uiState.value?.copy(customersSeleccionados = customersList)
 
 
