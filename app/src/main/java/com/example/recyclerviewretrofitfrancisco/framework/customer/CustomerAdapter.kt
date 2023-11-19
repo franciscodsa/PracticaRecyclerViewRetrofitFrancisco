@@ -91,9 +91,15 @@ class CustomerAdapter(
             // Configuración del evento de clic en cualquier otra parte del elemento (excepto el CheckBox)
             itemView.setOnClickListener {
                 itemView.setOnClickListener {
-                    val intent = Intent(context, DetalleYOrdersActivity::class.java)
-                    intent.putExtra("CUSTOMER_ID", item.id)
-                    context.startActivity(intent)
+                    if (item.isSelected){
+                        val item = getItem(bindingAdapterPosition)
+                        toggleSelection(item)
+                    }else{
+                        val intent = Intent(context, DetalleYOrdersActivity::class.java)
+                        intent.putExtra("CUSTOMER_ID", item.id)
+                        context.startActivity(intent)
+                    }
+
                 }
             }
 
