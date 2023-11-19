@@ -26,6 +26,7 @@ class CustomerAdapter(
     }
 
     private var selectedCustomers = mutableListOf<Customer>()
+
     private var selectedMode: Boolean = false
 
     fun startSelectedMode() {

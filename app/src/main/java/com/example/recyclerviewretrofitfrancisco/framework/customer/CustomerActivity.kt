@@ -19,6 +19,7 @@ class CustomerActivity : AppCompatActivity() {
 
     private lateinit var customerAdapter: CustomerAdapter
 
+    private var anteriorState : CustomerState? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCustomerBinding.inflate(layoutInflater)
@@ -79,14 +80,17 @@ class CustomerActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         viewModel.uiState.observe(this) { state ->
+            if (state.customersList!=anteriorState?.customersList && state.customersList.isNotEmpty()){
+                val customersList = state.customersList
+                customerAdapter.submitList(customersList)
+            }
 
             state.error?.let {
                 Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
                 //TODO : ADD ERRORVISTO EVENT
             }
 
-            val customersList = state.customersList
-            customerAdapter.submitList(customersList)
+
         }
     }
 

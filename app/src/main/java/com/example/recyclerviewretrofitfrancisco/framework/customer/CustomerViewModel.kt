@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recyclerviewretrofitfrancisco.domain.model.Customer
+import com.example.recyclerviewretrofitfrancisco.domain.usecases.DeleteCustomerUsecase
 import com.example.recyclerviewretrofitfrancisco.domain.usecases.GetAllCustomersUseCase
 import com.example.recyclerviewretrofitfrancisco.utils.NetworkResultt
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,7 +13,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CustomerViewModel @Inject constructor(private val getAllCustomersUseCase: GetAllCustomersUseCase) :
+class CustomerViewModel @Inject constructor(
+    private val getAllCustomersUseCase: GetAllCustomersUseCase,
+    private val deleteCustomerUsecase: DeleteCustomerUsecase
+) :
     ViewModel() {
 
     private val customersList = mutableListOf<Customer>()
@@ -41,9 +45,10 @@ class CustomerViewModel @Inject constructor(private val getAllCustomersUseCase: 
             CustomerEvent.StartSelectMode -> {
                 _uiState.value = _uiState.value?.copy(selectedMode = true)
             }
+
+            CustomerEvent.DeleteSelectedCustomers -> TODO()
         }
     }
-
 
 
     private fun seleccionaCustomer(customer: Customer) {

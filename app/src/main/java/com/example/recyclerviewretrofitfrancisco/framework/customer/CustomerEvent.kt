@@ -10,4 +10,6 @@ sealed class CustomerEvent{
     object ResetSelectMode: CustomerEvent()
 
     class SeleccionaCustomer(val  customer: Customer) : CustomerEvent()
+
+    object DeleteSelectedCustomers : CustomerEvent()
 }
