@@ -7,12 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recyclerviewretrofitfrancisco.R
 import com.example.recyclerviewretrofitfrancisco.databinding.ItemCustomerBinding
 import com.example.recyclerviewretrofitfrancisco.domain.model.Customer
 import com.example.recyclerviewretrofitfrancisco.framework.detalleyorders.DetalleYOrdersActivity
+import com.example.recyclerviewretrofitfrancisco.utils.SwipeGesture
 
 class CustomerAdapter(
     val context: Context,
@@ -132,6 +134,16 @@ class CustomerAdapter(
                 actions.onStartSelectMode(item)
             }
             notifyItemChanged(bindingAdapterPosition)
+        }
+    }
+
+    val swipeGesture = object : SwipeGesture(context){
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            if (direction == ItemTouchHelper.LEFT){
+                val position = viewHolder.bindingAdapterPosition
+                actions.onDelete(currentList[position])
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.recyclerviewretrofitfrancisco.R
 import com.example.recyclerviewretrofitfrancisco.databinding.ActivityCustomerBinding
@@ -20,6 +21,7 @@ class CustomerActivity : AppCompatActivity() {
     private lateinit var customerAdapter: CustomerAdapter
 
     private var anteriorState : CustomerState? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCustomerBinding.inflate(layoutInflater)
@@ -30,7 +32,7 @@ class CustomerActivity : AppCompatActivity() {
 
         customerAdapter = CustomerAdapter(this, object : CustomerAdapter.CustomerActions {
             override fun onDelete(customer: Customer) {
-                TODO("Not yet implemented")
+                viewModel.handleEvent(CustomerEvent.DeleteCustomer(customer))
             }
 
             override fun onStartSelectMode(customer: Customer) {
@@ -46,7 +48,8 @@ class CustomerActivity : AppCompatActivity() {
         binding.customerRecycleView.adapter = customerAdapter
         binding.customerRecycleView.layoutManager = LinearLayoutManager(this)
 
-
+        val touchHelper = ItemTouchHelper(customerAdapter.swipeGesture)
+        touchHelper.attachToRecyclerView(binding.customerRecycleView)
 
 
         viewModel.handleEvent(CustomerEvent.GetCustomers)

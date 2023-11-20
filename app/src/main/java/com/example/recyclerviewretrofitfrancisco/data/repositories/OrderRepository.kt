@@ -12,4 +12,8 @@ class OrderRepository @Inject constructor(private val remoteDataSource: RemoteDa
     suspend fun getCustomerOrders(id : Int) = withContext(Dispatchers.IO){
         remoteDataSource.getCustomerOrders(id)
     }
+
+    suspend fun deleteOrder(id : Int) = withContext(Dispatchers.IO){
+        remoteDataSource.deleteOrder(id)
+    }
 }

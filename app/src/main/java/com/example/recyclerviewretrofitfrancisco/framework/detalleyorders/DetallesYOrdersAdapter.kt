@@ -5,18 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recyclerviewretrofitfrancisco.R
 import com.example.recyclerviewretrofitfrancisco.databinding.ItemOrderBinding
 import com.example.recyclerviewretrofitfrancisco.domain.model.Order
+import com.example.recyclerviewretrofitfrancisco.utils.SwipeGesture
 
 class DetallesYOrdersAdapter (
     val context: Context,
     val actions: DetallesYOrdersActions
 ): ListAdapter<Order, DetallesYOrdersAdapter.ItemViewHolder>(DiffCallback()){
 
-    interface DetallesYOrdersActions{
+    fun interface DetallesYOrdersActions{
         fun onDelete(order: Order)
     }
 
@@ -54,6 +56,16 @@ class DetallesYOrdersAdapter (
         with(holder){
             val item = getItem(position)
             bind(item)
+        }
+    }
+
+    val swipeGesture = object : SwipeGesture(context){
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            if (direction == ItemTouchHelper.LEFT){
+                val position = viewHolder.bindingAdapterPosition
+                actions.onDelete(currentList[position])
+            }
         }
     }
 }

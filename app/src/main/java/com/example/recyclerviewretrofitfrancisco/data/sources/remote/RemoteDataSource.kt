@@ -9,6 +9,8 @@ import com.example.recyclerviewretrofitfrancisco.utils.NetworkResultt
 import java.lang.Exception
 import javax.inject.Inject
 
+//TODO: RECUERDA LAS CONSTANTES
+
 class RemoteDataSource @Inject constructor(
     private val customerService: CustomerService,
     private val orderService: OrderService
@@ -18,7 +20,7 @@ class RemoteDataSource @Inject constructor(
         try {
             val response = customerService.getCustomers()
 
-            if (response.isSuccessful) {
+            return if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {
                     val customers = it.map { customerResponse ->
@@ -26,10 +28,10 @@ class RemoteDataSource @Inject constructor(
                     }
                     return NetworkResultt.Success(customers)
                 }
-                return error("No data")
+                error("No data")
             } else {
                 val errorMessage = response.errorBody()?.string() ?: "Unknown error"
-                return error("Error ${response.code()} : $errorMessage")
+                error("Error ${response.code()} : $errorMessage")
             }
         } catch (e: Exception) {
             return error(e.message ?: e.toString())
@@ -40,17 +42,17 @@ class RemoteDataSource @Inject constructor(
         try {
             val response = customerService.getCustomer(id)
 
-            if (response.isSuccessful) {
+            return if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {
                     val customer = it.toCustomer()
                     return NetworkResultt.Success(customer)
                 }
 
-                return error("No data")
+                error("No data")
             } else {
                 val errorMessage = response.errorBody()?.string() ?: "Unknown error"
-                return error("Error ${response.code()} : $errorMessage")
+                error("Error ${response.code()} : $errorMessage")
             }
         } catch (e: Exception) {
             return error(e.message ?: e.toString())
@@ -61,11 +63,11 @@ class RemoteDataSource @Inject constructor(
         try {
             val response = customerService.deleteCustomer(id)
 
-            if (response.isSuccessful){
-                return NetworkResultt.Success(Unit)
+            return if (response.isSuccessful){
+                NetworkResultt.Success(Unit)
             }else{
                 val errorMessage = response.errorBody()?.string() ?: "Unknown error"
-                return error("Error ${response.code()} : $errorMessage")
+                error("Error ${response.code()} : $errorMessage")
             }
         }catch (e: Exception) {
             return error(e.message ?: e.toString())
@@ -76,7 +78,10 @@ class RemoteDataSource @Inject constructor(
         try {
             val response = orderService.getCustomerOrders(id)
 
-            if (response.isSuccessful) {
+            return if (!response.isSuccessful) {
+                val errorMessage = response.errorBody()?.string() ?: "Unknown error"
+                error("Error ${response.code()} : $errorMessage")
+            } else {
                 val body = response.body()
                 body?.let {
                     val orders = it.map { orderResponse ->
@@ -84,12 +89,24 @@ class RemoteDataSource @Inject constructor(
                     }
                     return NetworkResultt.Success(orders)
                 }
-                return error("No data")
-            } else {
-                val errorMessage = response.errorBody()?.string() ?: "Unknown error"
-                return error("Error ${response.code()} : $errorMessage")
+                error("No data")
             }
         } catch (e: Exception) {
+            return error(e.message ?: e.toString())
+        }
+    }
+
+    suspend fun deleteOrder(id : Int): NetworkResultt<Unit>{
+        try {
+            val response = orderService.deleteOrder(id)
+
+            return if (response.isSuccessful){
+                NetworkResultt.Success(Unit)
+            }else{
+                val errorMessage = response.errorBody()?.string() ?: "Unknown error"
+                error("Error ${response.code()} : $errorMessage")
+            }
+        }catch (e: Exception) {
             return error(e.message ?: e.toString())
         }
     }

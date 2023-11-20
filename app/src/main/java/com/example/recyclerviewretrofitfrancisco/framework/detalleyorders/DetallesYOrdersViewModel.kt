@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.recyclerviewretrofitfrancisco.domain.model.Order
+import com.example.recyclerviewretrofitfrancisco.domain.usecases.DeleteOrderUsecase
 import com.example.recyclerviewretrofitfrancisco.domain.usecases.GetCustomerOrderUsecase
 import com.example.recyclerviewretrofitfrancisco.domain.usecases.GetCustomerUsecase
 import com.example.recyclerviewretrofitfrancisco.utils.NetworkResultt
@@ -14,17 +16,37 @@ import javax.inject.Inject
 @HiltViewModel
 class DetallesYOrdersViewModel @Inject constructor(
     private val getCustomerOrderUsecase: GetCustomerOrderUsecase,
-    private val getCustomerUsecase: GetCustomerUsecase
+    private val getCustomerUsecase: GetCustomerUsecase,
+    private val deleteOrderUsecase: DeleteOrderUsecase
 ) :
     ViewModel() {
 
     private val _uiState = MutableLiveData(DetallesYOrdersState())
     val uiState: LiveData<DetallesYOrdersState> get() = _uiState
+
     fun handleEvent(event: DetallesYOrdersEvent) {
         when (event) {
             is DetallesYOrdersEvent.GetCustomerOrders -> getCustomerOrder(event.id)
             is DetallesYOrdersEvent.GetCustomer -> getCustomer(event.id)
+            is DetallesYOrdersEvent.DeleteOrder ->deleteOrder(event.order)
+            DetallesYOrdersEvent.ErrorVisto -> _uiState.value = _uiState.value?.copy(error = null)
+            is DetallesYOrdersEvent.AddOrder -> TODO()
         }
+    }
+
+    private fun deleteOrder(order: Order) {
+        viewModelScope.launch {
+            val response = deleteOrderUsecase.invoke(order.id)
+
+            when(response){
+                is NetworkResultt.Error -> TODO()
+                is NetworkResultt.Loading -> TODO()
+                is NetworkResultt.Success -> _uiState.value = _uiState.value?.copy(error = "Order eliminada")
+            }
+
+            getCustomerOrder(order.customerId)
+        }
+
     }
 
     private fun getCustomer(id : Int){

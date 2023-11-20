@@ -19,7 +19,6 @@ class CustomerViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    private val customersList = mutableListOf<Customer>()
 
     private var selectedCustomers = mutableListOf<Customer>()
 
@@ -47,7 +46,10 @@ class CustomerViewModel @Inject constructor(
             }
 
             CustomerEvent.DeleteSelectedCustomers -> deleteCustomers(selectedCustomers)
+
             CustomerEvent.ErrorVisto -> _uiState.value = _uiState.value?.copy(error = null)
+
+            is CustomerEvent.DeleteCustomer -> deleteCustomer(event.customer)
         }
     }
 
@@ -65,21 +67,6 @@ class CustomerViewModel @Inject constructor(
             resetSelectMode()
             getCustomers()
         }
-       /* viewModelScope.launch {
-            this@CustomerViewModel.selectedCustomers?.forEach { customer ->
-                // Obtener el ID del cliente y llamar al caso de uso para eliminarlo
-                val customerId = customer.id
-
-                deleteCustomer(customerId)
-            }
-            // Obtener la lista de clientes actualizada después de la eliminación
-            getCustomers()
-        }
-
-        // Después de eliminar todos los clientes seleccionados, limpiar la lista de seleccionados en el estado
-        this.selectedCustomers.clear()
-        _uiState.value = _uiState.value?.copy(customersSeleccionados = customersList)*/
-
 
     }
 
@@ -88,25 +75,18 @@ class CustomerViewModel @Inject constructor(
         _uiState.value = _uiState.value?.copy(selectedMode = false, customersSeleccionados = selectedCustomers)
     }
 
-    private suspend fun deleteCustomer(customerId: Int) {
-        val result =
-            deleteCustomerUsecase.invoke(customerId) // Asumiendo que 'invoke' toma el ID como parámetro para eliminar el cliente
+    private fun deleteCustomer(customer: Customer) {
+       viewModelScope.launch {
+           val result = deleteCustomerUsecase.invoke(customer.id)
 
-        // Aquí puedes manejar el resultado si es necesario, por ejemplo, actualizar el estado en caso de error, etc.
-        when (result) {
-            is NetworkResultt.Error -> {
-                // Manejar el error si es necesario
-                _uiState.value =
-                    _uiState.value?.copy(error = "Error al eliminar cliente con ID: $customerId")
-            }
+           when(result){
+               is NetworkResultt.Error -> TODO()
+               is NetworkResultt.Loading -> TODO()
+               is NetworkResultt.Success -> _uiState.value = _uiState.value?.copy(error = "Customer eliminado")
+           }
+           getCustomers()
+       }
 
-            is NetworkResultt.Success -> {
-                _uiState.value = _uiState.value?.copy(error = "Customer eliminado")
-                selectedCustomers.removeFirst()
-            }
-            // Agregar manejo para NetworkResultt.Loading si es necesario
-            is NetworkResultt.Loading -> TODO()
-        }
     }
 
 
