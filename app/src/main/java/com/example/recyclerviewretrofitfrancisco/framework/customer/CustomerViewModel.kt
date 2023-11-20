@@ -7,10 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.recyclerviewretrofitfrancisco.domain.model.Customer
 import com.example.recyclerviewretrofitfrancisco.domain.usecases.DeleteCustomerUsecase
 import com.example.recyclerviewretrofitfrancisco.domain.usecases.GetAllCustomersUseCase
+import com.example.recyclerviewretrofitfrancisco.framework.Constantes
 import com.example.recyclerviewretrofitfrancisco.utils.NetworkResultt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+
+
 
 @HiltViewModel
 class CustomerViewModel @Inject constructor(
@@ -58,10 +62,15 @@ class CustomerViewModel @Inject constructor(
             customers.forEach { customer ->
                 var result = deleteCustomerUsecase.invoke(customer.id)
 
-                when(result){
-                    is NetworkResultt.Error -> _uiState.value = _uiState.value?.copy(error = result.message)
-                    is NetworkResultt.Success -> _uiState.value = _uiState.value?.copy(error = "eliminado(s)")
-                    is NetworkResultt.Loading -> TODO()
+                when (result) {
+                    is NetworkResultt.Error -> _uiState.value =
+                        _uiState.value?.copy(error = result.message)
+
+                    is NetworkResultt.Success -> _uiState.value =
+                        _uiState.value?.copy(error = Constantes.mensajeCustomersEliminados)
+
+                    is NetworkResultt.Loading -> _uiState.value =
+                        _uiState.value?.copy(error = Constantes.mensajeCargando)
                 }
             }
             resetSelectMode()
@@ -72,20 +81,26 @@ class CustomerViewModel @Inject constructor(
 
     private fun resetSelectMode() {
         selectedCustomers.clear()
-        _uiState.value = _uiState.value?.copy(selectedMode = false, customersSeleccionados = selectedCustomers)
+        _uiState.value =
+            _uiState.value?.copy(selectedMode = false, customersSeleccionados = selectedCustomers)
     }
 
     private fun deleteCustomer(customer: Customer) {
-       viewModelScope.launch {
-           val result = deleteCustomerUsecase.invoke(customer.id)
+        viewModelScope.launch {
+            val result = deleteCustomerUsecase.invoke(customer.id)
 
-           when(result){
-               is NetworkResultt.Error -> TODO()
-               is NetworkResultt.Loading -> TODO()
-               is NetworkResultt.Success -> _uiState.value = _uiState.value?.copy(error = "Customer eliminado")
-           }
-           getCustomers()
-       }
+            when (result) {
+                is NetworkResultt.Error -> _uiState.value =
+                    _uiState.value?.copy(error = result.message)
+
+                is NetworkResultt.Loading -> _uiState.value =
+                    _uiState.value?.copy(error = Constantes.mensajeCargando)
+
+                is NetworkResultt.Success -> _uiState.value =
+                    _uiState.value?.copy(error = Constantes.mensajeCustomerBorrado)
+            }
+            getCustomers()
+        }
 
     }
 
@@ -110,15 +125,13 @@ class CustomerViewModel @Inject constructor(
             val result = getAllCustomersUseCase.invoke()
 
             when (result) {
-                //TODO : REVISA LO DEL RESULT MESSAGE
                 is NetworkResultt.Error -> _uiState.value =
-                    _uiState.value?.copy(error = "Error al recuperar customers")
+                    _uiState.value?.copy(error = Constantes.errorRecuperarCustomers)
 
-                is NetworkResultt.Loading -> TODO()
+                is NetworkResultt.Loading -> _uiState.value = _uiState.value?.copy(error = Constantes.mensajeCargando)
                 is NetworkResultt.Success -> {
                     result.data?.let { customers ->
                         val updatedState = _uiState.value?.copy(customersList = customers)
-
                         _uiState.value = updatedState
                     }
                 }

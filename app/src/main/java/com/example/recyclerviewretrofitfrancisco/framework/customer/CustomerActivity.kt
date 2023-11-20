@@ -39,10 +39,6 @@ class CustomerActivity : AppCompatActivity() {
                 viewModel.handleEvent(CustomerEvent.StartSelectMode)
                 viewModel.handleEvent(CustomerEvent.SeleccionaCustomer(customer))
             }
-
-            override fun itemWasClicked(customer: Customer) {
-                TODO("Not yet implemented")
-            }
         })
 
         binding.customerRecycleView.adapter = customerAdapter
@@ -71,7 +67,6 @@ class CustomerActivity : AppCompatActivity() {
 
                     true
                 }
-
                 else -> false
             }
 

@@ -13,8 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.recyclerviewretrofitfrancisco.R
 import com.example.recyclerviewretrofitfrancisco.databinding.ItemCustomerBinding
 import com.example.recyclerviewretrofitfrancisco.domain.model.Customer
+import com.example.recyclerviewretrofitfrancisco.framework.Constantes
 import com.example.recyclerviewretrofitfrancisco.framework.detalleyorders.DetalleYOrdersActivity
-import com.example.recyclerviewretrofitfrancisco.utils.SwipeGesture
+import com.example.recyclerviewretrofitfrancisco.framework.SwipeGesture
 
 class CustomerAdapter(
     val context: Context,
@@ -24,28 +25,12 @@ class CustomerAdapter(
     interface CustomerActions {
         fun onDelete(customer: Customer)
         fun onStartSelectMode(customer: Customer)
-        fun itemWasClicked(customer: Customer)
     }
 
     private var selectedCustomers = mutableListOf<Customer>()
 
     private var selectedMode: Boolean = false
 
-    fun startSelectedMode() {
-        selectedMode = true
-        notifyDataSetChanged()
-    }
-
-    fun resetSelectedMode() {
-        selectedMode = false
-        selectedCustomers.clear()
-        notifyDataSetChanged()
-    }
-
-    fun setSelectedItems(customersSeleccionados: List<Customer>) {
-        selectedCustomers.clear()
-        selectedCustomers.addAll(customersSeleccionados)
-    }
 
     class DiffCallback : DiffUtil.ItemCallback<Customer>() {
         override fun areItemsTheSame(oldItem: Customer, newItem: Customer): Boolean {
@@ -74,15 +59,13 @@ class CustomerAdapter(
 
         fun bind(item: Customer) {
 
-
             // Configuración del evento de clic largo en el elemento de la lista
             itemView.setOnLongClickListener {
                 if (!selectedMode) {
                     val item = getItem(bindingAdapterPosition)
                     toggleSelection(item)
-
                 }
-                true // Indicar que se ha manejado el clic largo
+                true // Indica que se ha manejado el clic largo
             }
 
             // Configuración del evento de clic en el CheckBox
@@ -99,10 +82,9 @@ class CustomerAdapter(
                         toggleSelection(item)
                     }else{
                         val intent = Intent(context, DetalleYOrdersActivity::class.java)
-                        intent.putExtra("CUSTOMER_ID", item.id)
+                        intent.putExtra(Constantes.idIntentName, item.id)
                         context.startActivity(intent)
                     }
-
                 }
             }
 
@@ -110,7 +92,6 @@ class CustomerAdapter(
                 // Lógica para seleccionar/deseleccionar elementos
                 selected.isChecked = item.isSelected
                 updateItemBackgroundColor(item)
-
 
                 tvNombre.text = item.firstName
                 tvId.text = item.id.toString()
@@ -138,7 +119,6 @@ class CustomerAdapter(
     }
 
     val swipeGesture = object : SwipeGesture(context){
-
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             if (direction == ItemTouchHelper.LEFT){
                 val position = viewHolder.bindingAdapterPosition

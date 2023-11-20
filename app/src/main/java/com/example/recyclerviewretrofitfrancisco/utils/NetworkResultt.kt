@@ -13,14 +13,12 @@ sealed class NetworkResultt<T>(
     class Loading<T> : NetworkResultt<T>()
 
 
-    fun <R> map( transform :(data: T?) -> R) : NetworkResultt<R> =
-        when(this){
-            is Error -> Error(message!!,transform(data))
+    fun <R> map(transform: (data: T?) -> R): NetworkResultt<R> =
+        when (this) {
+            is Error -> Error(message!!, transform(data))
             is Loading -> Loading()
             is Success -> Success(transform(data))
         }
-
-
 
 
 }

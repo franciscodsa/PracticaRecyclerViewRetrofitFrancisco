@@ -1,8 +1,8 @@
 package com.example.recyclerviewretrofitfrancisco.data.sources.remote.di
 
+import com.example.recyclerviewretrofitfrancisco.data.sources.remote.ConstantesSources
 import com.example.recyclerviewretrofitfrancisco.data.sources.remote.CustomerService
 import com.example.recyclerviewretrofitfrancisco.data.sources.remote.OrderService
-import com.example.recyclerviewretrofitfrancisco.data.sources.remote.ServiceInterceptor
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson
@@ -18,22 +18,15 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Singleton
 
-//TODO: RECUERDA LAS CONSTANTES
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
 
-
-    @Singleton
-    @Provides
-    fun provideServiceInterceptor(): ServiceInterceptor = ServiceInterceptor()
-
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
-        // Create and configure OkHttpClient here
         return OkHttpClient.Builder().build()
     }
 
@@ -55,7 +48,7 @@ object NetworkModule {
         moshiConverterFactory: MoshiConverterFactory
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://informatica.iesquevedo.es:2326/FranciscoRest/api/")
+            .baseUrl(ConstantesSources.urlsBase)
             .client(okHttpClient)
             .addConverterFactory(moshiConverterFactory)
             .build()
@@ -75,8 +68,6 @@ object NetworkModule {
 
 
 class LocalDateAdapter {
-    private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-
     @ToJson
     fun toJson( value: LocalDate): String {
         return value.format(DateTimeFormatter.ISO_LOCAL_DATE)

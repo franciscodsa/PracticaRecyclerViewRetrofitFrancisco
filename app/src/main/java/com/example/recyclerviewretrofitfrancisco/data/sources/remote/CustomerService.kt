@@ -7,12 +7,12 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface CustomerService {
-    @GET("customers")
+    @GET(ConstantesSources.customers)
     suspend fun getCustomers():Response<List<CustomerResponse>>
 
-    @GET("customers/{id}")
+    @GET(ConstantesSources.customersPathId)
     suspend fun getCustomer(@Path("id") id : Int) : Response<CustomerResponse>
 
-    @DELETE("customers/{id}")
+    @DELETE(ConstantesSources.deleteCustomer)
     suspend fun deleteCustomer(@Path("id") id : Int) : Response<Unit>
 }

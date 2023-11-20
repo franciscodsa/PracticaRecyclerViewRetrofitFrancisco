@@ -11,26 +11,26 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.recyclerviewretrofitfrancisco.R
 import com.example.recyclerviewretrofitfrancisco.databinding.ItemOrderBinding
 import com.example.recyclerviewretrofitfrancisco.domain.model.Order
-import com.example.recyclerviewretrofitfrancisco.utils.SwipeGesture
+import com.example.recyclerviewretrofitfrancisco.framework.SwipeGesture
 
-class DetallesYOrdersAdapter (
+class DetallesYOrdersAdapter(
     val context: Context,
     val actions: DetallesYOrdersActions
-): ListAdapter<Order, DetallesYOrdersAdapter.ItemViewHolder>(DiffCallback()){
+) : ListAdapter<Order, DetallesYOrdersAdapter.ItemViewHolder>(DiffCallback()) {
 
-    fun interface DetallesYOrdersActions{
+    fun interface DetallesYOrdersActions {
         fun onDelete(order: Order)
     }
 
-    inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+    inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val binding = ItemOrderBinding.bind(itemView)
 
-        fun bind(item : Order){
-            with(binding){
+        fun bind(item: Order) {
+            with(binding) {
                 tableId.text = item.table.toString()
-                idOrder.text= item.id.toString()
-                dateTimeOrder.text= item.dateTime.toString()
+                idOrder.text = item.id.toString()
+                dateTimeOrder.text = item.dateTime.toString()
             }
         }
 
@@ -53,16 +53,16 @@ class DetallesYOrdersAdapter (
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        with(holder){
+        with(holder) {
             val item = getItem(position)
             bind(item)
         }
     }
 
-    val swipeGesture = object : SwipeGesture(context){
+    val swipeGesture = object : SwipeGesture(context) {
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            if (direction == ItemTouchHelper.LEFT){
+            if (direction == ItemTouchHelper.LEFT) {
                 val position = viewHolder.bindingAdapterPosition
                 actions.onDelete(currentList[position])
             }

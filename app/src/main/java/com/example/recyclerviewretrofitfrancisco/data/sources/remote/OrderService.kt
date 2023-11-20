@@ -12,13 +12,13 @@ import retrofit2.http.Query
 
 interface OrderService {
 
-    @GET("orders/customer")
-    suspend fun getCustomerOrders(@Query("id") id : Int) : Response<List<OrderResponse>>
+    @GET(ConstantesSources.ordersCustomers)
+    suspend fun getCustomerOrders(@Query(ConstantesSources.id) id : Int) : Response<List<OrderResponse>>
 
-    @POST("orders")
-    suspend fun añadirOrder(@Body order: Order) : Response<OrderResponse>
+    @POST(ConstantesSources.orders)
+    suspend fun addOrder(@Body order: Order) : Response<OrderResponse>
 
-    @DELETE("orders/{id}")
-    suspend fun deleteOrder(@Path("id") id : Int) : Response <Unit>
+    @DELETE(ConstantesSources.deleteOrder)
+    suspend fun deleteOrder(@Path(ConstantesSources.id) id : Int) : Response <Unit>
 
 }
