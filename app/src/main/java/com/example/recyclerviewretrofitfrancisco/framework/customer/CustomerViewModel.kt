@@ -35,7 +35,7 @@ class CustomerViewModel @Inject constructor(
             }
 
             CustomerEvent.ResetSelectMode -> {
-                _uiState.value?.copy(customersSeleccionados = emptyList())
+                resetSelectMode()
             }
 
             is CustomerEvent.SeleccionaCustomer -> {
@@ -46,14 +46,27 @@ class CustomerViewModel @Inject constructor(
                 _uiState.value = _uiState.value?.copy(selectedMode = true)
             }
 
-            CustomerEvent.DeleteSelectedCustomers -> deleteCustomers()
+            CustomerEvent.DeleteSelectedCustomers -> deleteCustomers(selectedCustomers)
             CustomerEvent.ErrorVisto -> _uiState.value = _uiState.value?.copy(error = null)
         }
     }
 
-    private fun deleteCustomers() {
+    private fun deleteCustomers(customers: List<Customer>) {
         viewModelScope.launch {
-            selectedCustomers?.forEach { customer ->
+            customers.forEach { customer ->
+                var result = deleteCustomerUsecase.invoke(customer.id)
+
+                when(result){
+                    is NetworkResultt.Error -> _uiState.value = _uiState.value?.copy(error = result.message)
+                    is NetworkResultt.Success -> _uiState.value = _uiState.value?.copy(error = "eliminado(s)")
+                    is NetworkResultt.Loading -> TODO()
+                }
+            }
+            resetSelectMode()
+            getCustomers()
+        }
+       /* viewModelScope.launch {
+            this@CustomerViewModel.selectedCustomers?.forEach { customer ->
                 // Obtener el ID del cliente y llamar al caso de uso para eliminarlo
                 val customerId = customer.id
 
@@ -64,10 +77,15 @@ class CustomerViewModel @Inject constructor(
         }
 
         // Después de eliminar todos los clientes seleccionados, limpiar la lista de seleccionados en el estado
+        this.selectedCustomers.clear()
+        _uiState.value = _uiState.value?.copy(customersSeleccionados = customersList)*/
+
+
+    }
+
+    private fun resetSelectMode() {
         selectedCustomers.clear()
-        _uiState.value = _uiState.value?.copy(customersSeleccionados = customersList)
-
-
+        _uiState.value = _uiState.value?.copy(selectedMode = false, customersSeleccionados = selectedCustomers)
     }
 
     private suspend fun deleteCustomer(customerId: Int) {
