@@ -5,7 +5,7 @@
     <item
         android:id="@+id/añadirMenuBarAction"
         android:title="@string/anyadir"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/plus_icon"
         app:showAsAction="always"
         />
 

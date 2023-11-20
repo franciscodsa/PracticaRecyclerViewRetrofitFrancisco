@@ -44,7 +44,7 @@ abstract class SwipeGesture(context: Context) : ItemTouchHelper.SimpleCallback(0
             isCurrentlyActive
         )
             .addSwipeLeftBackgroundColor(deleteColor)
-            .addSwipeLeftActionIcon(R.drawable.ic_launcher_foreground)
+            .addSwipeLeftActionIcon(R.drawable.trash_small)
             .create()
             .decorate()
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
