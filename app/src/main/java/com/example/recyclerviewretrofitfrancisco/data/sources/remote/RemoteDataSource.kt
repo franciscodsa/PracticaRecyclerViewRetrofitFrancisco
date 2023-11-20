@@ -110,4 +110,24 @@ class RemoteDataSource @Inject constructor(
             return error(e.message ?: e.toString())
         }
     }
+
+    suspend fun addOrder(order: Order): NetworkResultt<Order>{
+        try {
+            val response = orderService.añadirOrder(order)
+
+            return if (!response.isSuccessful) {
+                val errorMessage = response.errorBody()?.string() ?: "Unknown error"
+                error("Error ${response.code()} : $errorMessage")
+            } else {
+                val body = response.body()
+                body?.let {
+                    val order = it.toOrder()
+                    return NetworkResultt.Success(order)
+                }
+                error("No data")
+            }
+        }catch (e: Exception) {
+            return error(e.message ?: e.toString())
+        }
+    }
 }

@@ -5,19 +5,23 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recyclerviewretrofitfrancisco.domain.model.Order
+import com.example.recyclerviewretrofitfrancisco.domain.usecases.AddOrderUsecase
 import com.example.recyclerviewretrofitfrancisco.domain.usecases.DeleteOrderUsecase
 import com.example.recyclerviewretrofitfrancisco.domain.usecases.GetCustomerOrderUsecase
 import com.example.recyclerviewretrofitfrancisco.domain.usecases.GetCustomerUsecase
 import com.example.recyclerviewretrofitfrancisco.utils.NetworkResultt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class DetallesYOrdersViewModel @Inject constructor(
     private val getCustomerOrderUsecase: GetCustomerOrderUsecase,
     private val getCustomerUsecase: GetCustomerUsecase,
-    private val deleteOrderUsecase: DeleteOrderUsecase
+    private val deleteOrderUsecase: DeleteOrderUsecase,
+    private val addOrderUsecase: AddOrderUsecase
 ) :
     ViewModel() {
 
@@ -30,7 +34,21 @@ class DetallesYOrdersViewModel @Inject constructor(
             is DetallesYOrdersEvent.GetCustomer -> getCustomer(event.id)
             is DetallesYOrdersEvent.DeleteOrder ->deleteOrder(event.order)
             DetallesYOrdersEvent.ErrorVisto -> _uiState.value = _uiState.value?.copy(error = null)
-            is DetallesYOrdersEvent.AddOrder -> TODO()
+            is DetallesYOrdersEvent.AddOrder -> addOrder(event.id)
+        }
+    }
+
+    private fun addOrder(id: Int) {
+        viewModelScope.launch {
+            val response = addOrderUsecase.invoke(Order(id, LocalDateTime.now(), 0, Random.nextInt(1,8)))
+
+            when(response){
+                is NetworkResultt.Error -> TODO()
+                is NetworkResultt.Loading -> TODO()
+                is NetworkResultt.Success -> _uiState.value = _uiState.value?.copy(error = "Order añadida")
+            }
+
+            getCustomerOrder(id)
         }
     }
 
@@ -43,6 +61,7 @@ class DetallesYOrdersViewModel @Inject constructor(
                 is NetworkResultt.Loading -> TODO()
                 is NetworkResultt.Success -> _uiState.value = _uiState.value?.copy(error = "Order eliminada")
             }
+
 
             getCustomerOrder(order.customerId)
         }
