@@ -31,6 +31,21 @@ class CustomerAdapter(
 
     private var selectedMode: Boolean = false
 
+    fun startSelectMode() {
+        selectedMode = true
+        notifyDataSetChanged()
+    }
+    fun resetSelectMode() {
+        selectedMode = false
+        selectedCustomers.clear()
+        notifyDataSetChanged()
+    }
+    fun setSelectedItems(customersSeleccionados: List<Customer>) {
+        selectedCustomers.clear()
+        selectedCustomers.addAll(customersSeleccionados)
+        notifyDataSetChanged()
+    }
+
 
     class DiffCallback : DiffUtil.ItemCallback<Customer>() {
         override fun areItemsTheSame(oldItem: Customer, newItem: Customer): Boolean {
